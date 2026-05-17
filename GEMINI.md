@@ -18,9 +18,10 @@ This file contains the architectural standards, conventions, and workflows for t
 2. **Strategy:** Plan changes before execution.
 3. **Execution:** 
    - Apply changes surgically.
-   - Run existing tests and add new ones to verify.
-   - Run `ruff check .` and `pytest` to validate.
-4. **Validation:** Always verify correctness via tests and linting before considering a task complete.
-5. **Synchronization:** Perform a Git synchronization (push/pull) according to Git Flow after work is completed.
+   - Run local CI parity checks: `ruff`, `mypy`, `safety`, `pytest`.
+4. **Validation:** Analyze `git diff` to ensure all changes are intentional and logical.
+5. **Synchronization:** 
+   - Ensure local CI parity passes.
+   - Perform Git synchronization (push/pull) according to Git Flow only after successful local validation.
 6. **CI Monitoring:** Monitor the GitHub Actions pipeline for the pushed changes.
-7. **Autonomous Fix:** If CI fails, analyze logs in Plan Mode and propose/apply necessary fixes until CI is green.
+7. **Autonomous Fix:** If CI fails, analyze logs in Plan Mode and apply fixes until CI is green.

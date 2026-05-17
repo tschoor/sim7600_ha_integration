@@ -30,17 +30,15 @@ Entwicklung einer offiziellen, stabilen und asynchronen Home Assistant Integrati
 ---
 
 ## 🔄 4. Workflow & Qualitätssicherung
-* **Statische Analyse:** Führe vor jeder Code-Änderung eine Analyse via `ruff check .` und `mypy .` durch.
-* **Testing:** Für jede neue Logik (insb. Parser) muss ein Testfall in `tests/` existieren. Nutze `pytest` und Mocks für die Hardware-Antworten.
-* **Git Synchronization:** Nach Abschluss jeder Aufgabe muss ein `git push` (und ggf. `git pull --rebase`) durchgeführt werden, um den lokalen Stand mit dem Remote-Repository gemäß Git Flow zu synchronisieren.
-* **CI Ownership:** Ein Task gilt erst dann als "Done", wenn die GitHub Actions Pipeline erfolgreich ("grün") durchgelaufen ist.
+* **Lokale CI-Parität:** Vor jedem Push müssen alle CI-Schritte (Ruff, Mypy, Safety, Pytest) lokal erfolgreich ausgeführt werden. Ein Push ohne lokale Verifizierung ist untersagt.
+* **Commit-Disziplin:** Jede Commit-Nachricht muss auf einer Analyse des `git diff` basieren und den logischen Kern der Änderung präzise beschreiben.
+* **CI Ownership:** Ein Task gilt erst dann als "Done", wenn sowohl der lokale Lauf als auch die GitHub Actions Pipeline erfolgreich ("grün") sind.
 * **Autonomes Troubleshooting:** Bei Pipeline-Fehlern muss der Agent eigenständig die Logs analysieren und eine Korrekturstrategie im Plan-Modus entwickeln.
-* **Dokumentation:** Halte die **arc42**-Dokumente (`docs/arc42/*.md`) synchron zum Code. Architektonische Entscheidungen (ADRs) werden dort festgehalten.
 
 ---
 
 ## 🤖 5. Anweisungen für die KI (System Prompt)
-1. **Analysiere** immer zuerst die bestehende Struktur, bevor du Code generierst.
-2. **Verweigere** Implementierungen, die gegen die Asynchronität von Home Assistant verstoßen.
-3. **Frage nach**, wenn Anforderungen unklar sind oder gegen HA-Beste-Praktiken verstoßen könnten.
-4. **Handle proaktiv:** Wenn du einen Fehler im Parser findest, schlage sofort den Fix UND den passenden Test vor.
+1. **Analysiere** immer zuerst die bestehende Struktur und den aktuellen `git diff`, bevor du Code generierst oder einen Commit durchführst.
+2. **Verweigere** Implementierungen, die gegen die Asynchronität von Home Assistant verstoßen oder die lokale CI-Parität gefährden.
+3. **Handle proaktiv:** Führe die gesamte Test- und Linting-Suite lokal aus, bevor du die Arbeit als abgeschlossen meldest.
+4. **Präzision:** Erstelle logische Commit-Nachrichten, die den "Warum"-Aspekt der Änderung basierend auf dem tatsächlichen Diff hervorheben.
