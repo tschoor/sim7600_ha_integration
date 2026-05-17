@@ -21,31 +21,39 @@ class SIM7600DataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             hass,
             LOGGER,
             name=DOMAIN,
-            update_interval=timedelta(seconds=30),
+            update_interval=timedelta(seconds=60),
         )
         self.modem = modem
         self.imei: str | None = None
         self.firmware: str | None = None
+        self.manufacturer: str | None = None
+        self.model: str | None = None
         self.last_sms: dict[str, str] | None = None
         self.gps_enabled: bool = False
 
     async def _async_update_data(self) -> dict[str, Any]:
         """Fetch data from SIM7600."""
         try:
-            # Fetch static info once
+            # Initial retrieval of static system info
             if self.imei is None:
                 self.imei = await self.modem.get_imei()
             if self.firmware is None:
                 self.firmware = await self.modem.get_firmware()
+            if self.manufacturer is None:
+                self.manufacturer = await self.modem.get_manufacturer()
+            if self.model is None:
+                self.model = await self.modem.get_model()
 
             # Enable GPS once
             if not self.gps_enabled:
                 self.gps_enabled = await self.modem.set_gps(True)
 
+            # Periodic polling
             rssi = await self.modem.get_signal_quality()
             operator = await self.modem.get_operator()
             network_info = await self.modem.get_network_info()
-            sim_status = await self.modem.get_sim_status()
+            reg_stat = await self.modem.get_registration_status()
+            gprs_reg_stat = await self.modem.get_gprs_registration_status()
 
             # Check for new SMS
             messages = await self.modem.get_unread_sms()
@@ -58,7 +66,6 @@ class SIM7600DataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 gps_info = await self.modem.get_gps_info()
 
             # Map RSSI (0-31) to dBm
-            # 0: -113 dBm, 31: -51 dBm, 1 unit = 2 dBm
             signal_dbm = None
             if rssi is not None:
                 signal_dbm = -113 + (rssi * 2)
@@ -69,9 +76,12 @@ class SIM7600DataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 "operator": operator,
                 "network_mode": network_info.get("mode"),
                 "system_mode": network_info.get("system_mode"),
-                "sim_status": sim_status,
+                "reg_status": reg_stat,
+                "gprs_reg_status": gprs_reg_stat,
                 "imei": self.imei,
                 "firmware": self.firmware,
+                "manufacturer": self.manufacturer,
+                "model": self.model,
                 "last_sms": self.last_sms,
                 "gps": gps_info,
             }

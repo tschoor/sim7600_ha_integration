@@ -121,12 +121,36 @@ class SIM7600Modem:
                 return line.replace("Revision:", "").strip()
         return None
 
-    async def get_sim_status(self) -> str | None:
-        """Get the SIM card status."""
-        lines = await self.send_command("AT+CPIN?")
+    async def get_manufacturer(self) -> str | None:
+        """Get the modem manufacturer."""
+        lines = await self.send_command("AT+CGMI")
         for line in lines:
-            if match := re.search(r"\+CPIN:\s*(.+)", line):
-                return match.group(1)
+            if line and line not in ("OK", "ERROR"):
+                return line
+        return None
+
+    async def get_model(self) -> str | None:
+        """Get the modem model."""
+        lines = await self.send_command("AT+CGMM")
+        for line in lines:
+            if line and line not in ("OK", "ERROR"):
+                return line
+        return None
+
+    async def get_registration_status(self) -> int | None:
+        """Get network registration status."""
+        lines = await self.send_command("AT+CREG?")
+        for line in lines:
+            if match := re.search(r"\+CREG:\s*\d+,(\d+)", line):
+                return int(match.group(1))
+        return None
+
+    async def get_gprs_registration_status(self) -> int | None:
+        """Get GPRS network registration status."""
+        lines = await self.send_command("AT+CGREG?")
+        for line in lines:
+            if match := re.search(r"\+CGREG:\s*\d+,(\d+)", line):
+                return int(match.group(1))
         return None
 
     async def send_sms(self, number: str, message: str) -> bool:
