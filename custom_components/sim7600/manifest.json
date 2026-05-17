@@ -6,7 +6,7 @@
   "dependencies": ["usb"],
   "documentation": "https://github.com/tschoor/sim7600_ha_integration.git",
   "iot_class": "local_polling",
-  "requirements": ["pyserial-asyncio==0.6"],
+  "requirements": ["pyserial-asyncio-fast"],
   "usb": [
     {
       "vid": "1E0E",
