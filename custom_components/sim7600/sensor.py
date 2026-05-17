@@ -114,7 +114,7 @@ class SIM7600IMEISensor(SIM7600SensorBase):
 
     _attr_name = "IMEI"
     _attr_icon = "mdi:barcode"
-    _attr_entity_category = EntityCategory.DIAGNOSTIC
+    _attr_entity_category: EntityCategory = EntityCategory.DIAGNOSTIC
 
     @property
     def native_value(self) -> str | None:
@@ -127,7 +127,7 @@ class SIM7600FirmwareSensor(SIM7600SensorBase):
 
     _attr_name = "Firmware Version"
     _attr_icon = "mdi:software-control-major-weight"
-    _attr_entity_category = EntityCategory.DIAGNOSTIC
+    _attr_entity_category: EntityCategory = EntityCategory.DIAGNOSTIC
 
     @property
     def native_value(self) -> str | None:
@@ -140,7 +140,7 @@ class SIM7600SIMStatusSensor(SIM7600SensorBase):
 
     _attr_name = "SIM Status"
     _attr_icon = "mdi:sim"
-    _attr_entity_category = EntityCategory.DIAGNOSTIC
+    _attr_entity_category: EntityCategory = EntityCategory.DIAGNOSTIC
 
     @property
     def native_value(self) -> str | None:
