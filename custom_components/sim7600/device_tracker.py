@@ -40,7 +40,6 @@ class SIM7600DeviceTracker(
             "manufacturer": "SimTech",
             "model": "SIM7600 Series",
         }
-        self._attr_device_tracker_dict = {}
 
     @property
     def latitude(self) -> float | None:

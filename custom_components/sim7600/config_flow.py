@@ -6,15 +6,13 @@ from typing import Any
 
 import serial.tools.list_ports
 import voluptuous as vol
-from homeassistant import config_entries
-from homeassistant.components import usb
-from homeassistant.data_entry_flow import FlowResult
+from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.exceptions import HomeAssistantError
 
 from .const import CONF_BAUD_RATE, CONF_SERIAL_PORT, DEFAULT_BAUD, DOMAIN, LOGGER
 
 
-class Sim7600ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+class Sim7600ConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for SIM7600 4G & GPS Gateway."""
 
     VERSION = 1
@@ -25,7 +23,7 @@ class Sim7600ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Handle the initial step."""
         errors: dict[str, str] = {}
 
@@ -60,7 +58,7 @@ class Sim7600ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
-    async def async_step_usb(self, discovery_info: usb.UsbServiceInfo) -> FlowResult:
+    async def async_step_usb(self, discovery_info: usb.UsbServiceInfo) -> ConfigFlowResult:
         """Handle USB discovery."""
         LOGGER.debug("USB discovery: %s", discovery_info)
 
@@ -73,7 +71,7 @@ class Sim7600ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_discovery_confirm(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Confirm discovery."""
         if self._discovery_info is None:
             return self.async_abort(reason="unknown")
