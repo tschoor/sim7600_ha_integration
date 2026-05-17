@@ -39,7 +39,7 @@ jobs:
         run: ruff format --check .
 
       - name: Mypy Check
-        run: mypy --config-file pyproject.toml custom_components/sim7600
+        run: MYPYPATH=. mypy --config-file pyproject.toml custom_components/sim7600
 
       - name: Vulnerability Check
         run: safety check
