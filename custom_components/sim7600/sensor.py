@@ -12,6 +12,7 @@ from homeassistant.components.sensor import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import SIGNAL_STRENGTH_DECIBELS_MILLIWATT
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -113,7 +114,7 @@ class SIM7600IMEISensor(SIM7600SensorBase):
 
     _attr_name = "IMEI"
     _attr_icon = "mdi:barcode"
-    _attr_entity_category = "diagnostic"
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
 
     @property
     def native_value(self) -> str | None:
@@ -126,7 +127,7 @@ class SIM7600FirmwareSensor(SIM7600SensorBase):
 
     _attr_name = "Firmware Version"
     _attr_icon = "mdi:software-control-major-weight"
-    _attr_entity_category = "diagnostic"
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
 
     @property
     def native_value(self) -> str | None:
@@ -139,7 +140,7 @@ class SIM7600SIMStatusSensor(SIM7600SensorBase):
 
     _attr_name = "SIM Status"
     _attr_icon = "mdi:sim"
-    _attr_entity_category = "diagnostic"
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
 
     @property
     def native_value(self) -> str | None:

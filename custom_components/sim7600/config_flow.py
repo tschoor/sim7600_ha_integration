@@ -75,6 +75,9 @@ class Sim7600ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         """Confirm discovery."""
+        if self._discovery_info is None:
+            return self.async_abort(reason="unknown")
+
         if user_input is not None:
             return self.async_create_entry(
                 title=self._discovery_info.device,

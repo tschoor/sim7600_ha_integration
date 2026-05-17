@@ -6,7 +6,7 @@ from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers import config_validation as cv
 
-from .const import CONF_BAUD_RATE, CONF_SERIAL_PORT, DOMAIN
+from .const import CONF_BAUD_RATE, CONF_SERIAL_PORT, DOMAIN, LOGGER
 from .coordinator import SIM7600DataUpdateCoordinator
 from .modem import SIM7600Modem
 
@@ -46,7 +46,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         """Handle the service call."""
         number = call.data.get(ATTR_NUMBER)
         message = call.data.get(ATTR_MESSAGE)
-        await modem.send_sms(number, message)
+        if isinstance(number, str) and isinstance(message, str):
+            await modem.send_sms(number, message)
+        else:
+            LOGGER.error("Invalid service call data: %s, %s", number, message)
 
     hass.services.async_register(
         DOMAIN, SERVICE_SEND_SMS, handle_send_sms, schema=SEND_SMS_SCHEMA
