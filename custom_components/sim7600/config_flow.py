@@ -4,16 +4,27 @@ from __future__ import annotations
 
 from typing import Any
 
+import serial
 import serial.tools.list_ports
 import voluptuous as vol
 from homeassistant.components import usb
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.exceptions import HomeAssistantError
 
-from .const import CONF_BAUD_RATE, CONF_SERIAL_PORT, DEFAULT_BAUD, DOMAIN, LOGGER
+from .const import (
+    CONF_BAUD_RATE,
+    CONF_GNSS_INTERVAL,
+    CONF_POLLING_INTERVAL,
+    CONF_SERIAL_PORT,
+    DEFAULT_BAUD,
+    DEFAULT_GNSS_INTERVAL,
+    DEFAULT_POLLING_INTERVAL,
+    DOMAIN,
+    LOGGER,
+)
 
 
-class Sim7600ConfigFlow(ConfigFlow, domain=DOMAIN):
+class Sim7600ConfigFlow(ConfigFlow, domain=DOMAIN):  # type: ignore[call-arg]
     """Handle a config flow for SIM7600 4G & GPS Gateway."""
 
     VERSION = 1
@@ -54,6 +65,12 @@ class Sim7600ConfigFlow(ConfigFlow, domain=DOMAIN):
                     vol.Required(CONF_BAUD_RATE, default=DEFAULT_BAUD): vol.In(
                         [9600, 19200, 38400, 57600, 115200]
                     ),
+                    vol.Optional(
+                        CONF_POLLING_INTERVAL, default=DEFAULT_POLLING_INTERVAL
+                    ): vol.All(vol.Coerce(int), vol.Range(min=10)),
+                    vol.Optional(
+                        CONF_GNSS_INTERVAL, default=DEFAULT_GNSS_INTERVAL
+                    ): vol.All(vol.Coerce(int), vol.Range(min=60)),
                 }
             ),
             errors=errors,
@@ -95,16 +112,11 @@ class Sim7600ConfigFlow(ConfigFlow, domain=DOMAIN):
         )
 
     async def _validate_input(self, data: dict[str, Any]) -> None:
-        """Validate the user input allows us to connect.
-
-        Data has the keys from STEP_USER_DATA_SCHEMA with values provided by the user.
-        """
-        # For now, we just check if we can open the port.
-        # In the future, we should send an AT command to verify it's a SIM7600.
+        """Validate the user input allows us to connect."""
         port = data[CONF_SERIAL_PORT]
         baud = data[CONF_BAUD_RATE]
 
-        def _check_port():
+        def _check_port() -> None:
             try:
                 ser = serial.Serial(port, baud, timeout=1)
                 ser.close()
