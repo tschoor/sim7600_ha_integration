@@ -27,6 +27,8 @@ class SIM7600DeviceTracker(
 ):
     """Representation of a SIM7600 device tracker."""
 
+    _attr_device_tracker_dict: dict[str, Any] = {}
+
     def __init__(
         self, coordinator: SIM7600DataUpdateCoordinator, entry: ConfigEntry
     ) -> None:
