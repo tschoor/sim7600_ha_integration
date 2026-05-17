@@ -6,6 +6,7 @@ from typing import Any
 
 import serial.tools.list_ports
 import voluptuous as vol
+from homeassistant.components import usb
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.exceptions import HomeAssistantError
 
@@ -58,7 +59,9 @@ class Sim7600ConfigFlow(ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
-    async def async_step_usb(self, discovery_info: usb.UsbServiceInfo) -> ConfigFlowResult:
+    async def async_step_usb(
+        self, discovery_info: usb.UsbServiceInfo
+    ) -> ConfigFlowResult:
         """Handle USB discovery."""
         LOGGER.debug("USB discovery: %s", discovery_info)
 
