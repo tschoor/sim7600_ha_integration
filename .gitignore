@@ -1,0 +1,26 @@
+# Home Assistant & Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Gemini/AI tools
+.gemini/
+.claude/
+.claude.json
+.mcp.json
+.vscode/
+
+# Project context
+project_context.json
+plans/

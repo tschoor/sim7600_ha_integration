@@ -1,0 +1,9 @@
+pytest-homeassistant-custom-component
+pytest-asyncio
+ruff
+mypy
+types-pyserial
+aiousbwatcher
+serialx
+aioesphomeapi
+pyserial
