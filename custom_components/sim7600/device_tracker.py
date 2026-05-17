@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from homeassistant.components.device_tracker import SourceType, TrackerEntity
+from homeassistant.components.device_tracker import TrackerEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -64,6 +64,14 @@ class SIM7600DeviceTracker(
         return gps.get("altitude") if gps else None
 
     @property
-    def source_type(self) -> SourceType:
-        """Return the source type, eg gps or router, of the device."""
-        return SourceType.GPS
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Return extra state attributes."""
+        gps = self.coordinator.data.get("gps")
+        if gps:
+            return {
+                "date": gps.get("date"),
+                "time": gps.get("time"),
+                "speed": gps.get("speed"),
+                "altitude": gps.get("altitude"),
+            }
+        return {}

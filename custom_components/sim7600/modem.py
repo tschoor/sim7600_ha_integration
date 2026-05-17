@@ -153,6 +153,14 @@ class SIM7600Modem:
                 return int(match.group(1))
         return None
 
+    async def get_chip_details(self) -> str | None:
+        """Get chip details."""
+        lines = await self.send_command("AT+CSUB")
+        for line in lines:
+            if line and line not in ("OK", "ERROR"):
+                return line
+        return None
+
     async def send_sms(self, number: str, message: str) -> bool:
         """Send an SMS message."""
         async with self._lock:
@@ -254,12 +262,18 @@ class SIM7600Modem:
                     if parts[3] == "W":
                         longitude = -longitude
 
-                    info = {
+                    info: dict[str, Any] = {
                         "latitude": latitude,
                         "longitude": longitude,
                     }
-                    if len(parts) >= 7 and parts[6]:
+                    if len(parts) >= 5 and parts[4]:  # Date
+                        info["date"] = parts[4]
+                    if len(parts) >= 6 and parts[5]:  # Time
+                        info["time"] = parts[5]
+                    if len(parts) >= 7 and parts[6]:  # Altitude
                         info["altitude"] = float(parts[6])
+                    if len(parts) >= 8 and parts[7]:  # Speed
+                        info["speed"] = float(parts[7])
                     return info
                 except (ValueError, IndexError):
                     return None
