@@ -9,22 +9,23 @@ All development MUST strictly adhere to the [Git Flow](https://nvie.com/posts/a-
 - `hotfix/*`: Emergency patches.
 
 ## 2. CI/CD Pipeline (GitHub Actions)
-Every PR MUST pass the following automated pipeline stages:
-1. **Build:** Validate project compilation/dependency installation.
+The following automated pipeline stages are executed via GitHub Actions on every push and PR:
+1. **Build & Install:** Validate dependency installation.
 2. **Static Code Analysis:** Linting and code quality (using `ruff`).
-3. **Vulnerability Check:** Dependency scanning (e.g., `safety` or GitHub Dependabot).
-4. **License Check:** Ensure compliance of third-party dependencies.
-5. **Testing:** Full execution of the `pytest` suite.
-6. **Package:** Prepare build artifacts.
+3. **Type Checking:** Strict type verification (using `mypy`).
+4. **Vulnerability Check:** Dependency scanning (using `safety`).
+5. **License Check:** Compliance audit of third-party dependencies (using `pip-licenses`).
+6. **Testing:** Full execution of the `pytest` suite.
+7. **Snapshot Release:** Automated creation of pre-releases for `develop` and `feature/*` branches.
+
+These steps are handled by GitHub Actions and no longer require manual agent intervention.
 
 ## 3. Development Standards
 - **Validation:** No code change is complete without passing tests.
-- **Automation:** Use specialized agents to manage specific pipeline tasks.
+- **Automation:** Pipeline steps are automated via GitHub Actions to ensure consistency and reliability.
 - **Reporting:** All successful validations should trigger an automated PR creation.
+- **Git Synchronization:** Always perform a `git push` (and `git pull --rebase` if necessary) after completing work on a branch to keep the remote repository and local environment synchronized according to Git Flow.
 
-## 4. Specialized Agents
-The following dedicated agents handle specific workflow domains:
-- `workflow_engineer`: Orchestrates the CI/CD pipeline and Git Flow compliance.
-- `qa_agent`: Manages test suite execution, coverage reporting, and validation.
-- `security_compliance_agent`: Performs vulnerability scans and license audits.
-- `release_manager`: Handles versioning, changelog generation, and PR lifecycle management.
+## 4. Automation & Verification
+- **GitHub Actions:** Primary orchestrator for CI/CD.
+- **HACS:** Integration versions are automatically updated via snapshot releases on non-production branches.

@@ -7,3 +7,5 @@ aiousbwatcher
 serialx
 aioesphomeapi
 pyserial
+safety
+pip-licenses
