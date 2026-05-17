@@ -1,4 +1,5 @@
 """Konstanten für die SIM7600 Integration."""
+
 from logging import Logger, getLogger
 
 LOGGER: Logger = getLogger(__package__)

@@ -1,4 +1,5 @@
 """Support for SIM7600 device tracker."""
+
 from __future__ import annotations
 
 from homeassistant.components.device_tracker import SourceType, TrackerEntity
@@ -10,6 +11,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from .const import DOMAIN
 from .coordinator import SIM7600DataUpdateCoordinator
 
+
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: ConfigEntry,
@@ -19,7 +21,10 @@ async def async_setup_entry(
     coordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
     async_add_entities([SIM7600DeviceTracker(coordinator, entry)])
 
-class SIM7600DeviceTracker(CoordinatorEntity[SIM7600DataUpdateCoordinator], TrackerEntity):
+
+class SIM7600DeviceTracker(
+    CoordinatorEntity[SIM7600DataUpdateCoordinator], TrackerEntity
+):
     """Representation of a SIM7600 device tracker."""
 
     def __init__(

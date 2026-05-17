@@ -1,8 +1,12 @@
 """Tests for the SIM7600 coordinator."""
-from unittest.mock import AsyncMock, patch
+
+from unittest.mock import AsyncMock
+
 import pytest
 from homeassistant.helpers.update_coordinator import UpdateFailed
+
 from custom_components.sim7600.coordinator import SIM7600DataUpdateCoordinator
+
 
 @pytest.fixture
 def mock_modem():
@@ -19,6 +23,7 @@ def mock_modem():
     modem.get_sim_status.return_value = "READY"
     return modem
 
+
 async def test_coordinator_update_success(hass, mock_modem):
     """Test successful coordinator update."""
     coordinator = SIM7600DataUpdateCoordinator(hass, mock_modem)
@@ -32,6 +37,7 @@ async def test_coordinator_update_success(hass, mock_modem):
     assert data["imei"] == "123456789012345"
     assert data["firmware"] == "V1.0"
     assert data["sim_status"] == "READY"
+
 
 async def test_coordinator_update_failed(hass, mock_modem):
     """Test coordinator update failure."""

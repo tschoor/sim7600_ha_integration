@@ -1,0 +1,16 @@
+send_sms:
+  name: Send SMS
+  description: Sends an SMS message to a specific number.
+  fields:
+    number:
+      name: Number
+      description: The phone number to send the SMS to.
+      required: true
+      selector:
+        text:
+    message:
+      name: Message
+      description: The message content to send.
+      required: true
+      selector:
+        text:

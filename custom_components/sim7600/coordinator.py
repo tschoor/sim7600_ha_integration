@@ -1,4 +1,5 @@
 """DataUpdateCoordinator for SIM7600."""
+
 from __future__ import annotations
 
 from datetime import timedelta
@@ -9,6 +10,7 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 
 from .const import DOMAIN, LOGGER
 from .modem import SIM7600Modem
+
 
 class SIM7600DataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     """Class to manage fetching SIM7600 data."""
@@ -35,7 +37,7 @@ class SIM7600DataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 self.imei = await self.modem.get_imei()
             if self.firmware is None:
                 self.firmware = await self.modem.get_firmware()
-            
+
             # Enable GPS once
             if not self.gps_enabled:
                 self.gps_enabled = await self.modem.set_gps(True)
@@ -44,7 +46,7 @@ class SIM7600DataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             operator = await self.modem.get_operator()
             network_info = await self.modem.get_network_info()
             sim_status = await self.modem.get_sim_status()
-            
+
             # Check for new SMS
             messages = await self.modem.get_unread_sms()
             if messages:

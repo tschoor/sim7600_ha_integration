@@ -1,12 +1,11 @@
 """Config flow for SIM7600 4G & GPS Gateway integration."""
+
 from __future__ import annotations
 
-import logging
 from typing import Any
 
 import serial.tools.list_ports
 import voluptuous as vol
-
 from homeassistant import config_entries
 from homeassistant.components import usb
 from homeassistant.data_entry_flow import FlowResult
@@ -64,7 +63,7 @@ class Sim7600ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_usb(self, discovery_info: usb.UsbServiceInfo) -> FlowResult:
         """Handle USB discovery."""
         LOGGER.debug("USB discovery: %s", discovery_info)
-        
+
         await self.async_set_unique_id(discovery_info.device)
         self._abort_if_unique_id_configured()
 

@@ -1,7 +1,11 @@
 """Tests for the SIM7600 GPS parsing."""
+
+from unittest.mock import patch
+
 import pytest
+
 from custom_components.sim7600.modem import SIM7600Modem
-from unittest.mock import AsyncMock, patch
+
 
 @pytest.mark.parametrize(
     "gps_line,expected",
@@ -12,7 +16,11 @@ from unittest.mock import AsyncMock, patch
         ),
         (
             "+CGPSINFO: 5231.450000,N,01324.550000,E,250321,023504.0,10.0,0.0,0.0",
-            {"latitude": 52.524166666666666, "longitude": 13.409166666666667, "altitude": 10.0},
+            {
+                "latitude": 52.524166666666666,
+                "longitude": 13.409166666666667,
+                "altitude": 10.0,
+            },
         ),
         (
             "+CGPSINFO: ,,,,,,,,",

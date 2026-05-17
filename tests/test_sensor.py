@@ -1,14 +1,16 @@
 """Tests for the SIM7600 sensors."""
-from unittest.mock import MagicMock, patch
+
+from unittest.mock import MagicMock
+
 import pytest
-from homeassistant.core import HomeAssistant
-from custom_components.sim7600.const import DOMAIN
+
 from custom_components.sim7600.sensor import (
-    SIM7600SignalSensor,
-    SIM7600OperatorSensor,
     SIM7600NetworkModeSensor,
+    SIM7600OperatorSensor,
+    SIM7600SignalSensor,
     SIM7600SystemModeSensor,
 )
+
 
 @pytest.fixture
 def mock_coordinator():
@@ -22,12 +24,14 @@ def mock_coordinator():
     }
     return coordinator
 
+
 @pytest.fixture
 def mock_entry():
     """Mock a config entry."""
     entry = MagicMock()
     entry.entry_id = "test_entry"
     return entry
+
 
 def test_sensors_native_value(mock_coordinator, mock_entry):
     """Test the native value of sensors."""
@@ -40,6 +44,7 @@ def test_sensors_native_value(mock_coordinator, mock_entry):
     assert operator_sensor.native_value == "Test Operator"
     assert network_sensor.native_value == "LTE"
     assert system_sensor.native_value == "Online"
+
 
 def test_sensors_unique_id(mock_coordinator, mock_entry):
     """Test the unique ID of sensors."""

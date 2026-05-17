@@ -1,14 +1,15 @@
 """Modem communication layer for SIM7600."""
+
 from __future__ import annotations
 
 import asyncio
-import logging
 import re
 from typing import Any
 
 import serial_asyncio_fast
 
 from .const import LOGGER
+
 
 class SIM7600Modem:
     """Interface to communicate with SIM7600 via AT commands."""
@@ -25,7 +26,10 @@ class SIM7600Modem:
         """Connect to the modem."""
         if self._reader is None:
             try:
-                self._reader, self._writer = await serial_asyncio_fast.open_serial_connection(
+                (
+                    self._reader,
+                    self._writer,
+                ) = await serial_asyncio_fast.open_serial_connection(
                     url=self.port, baudrate=self.baudrate
                 )
             except Exception as err:
@@ -54,7 +58,9 @@ class SIM7600Modem:
             lines = []
             try:
                 while True:
-                    line_bytes = await asyncio.wait_for(self._reader.readline(), timeout)
+                    line_bytes = await asyncio.wait_for(
+                        self._reader.readline(), timeout
+                    )
                     line = line_bytes.decode().strip()
                     if not line:
                         continue
@@ -63,7 +69,7 @@ class SIM7600Modem:
                         break
             except asyncio.TimeoutError:
                 LOGGER.warning("Timeout waiting for response to: %s", command)
-            
+
             LOGGER.debug("Response: %s", lines)
             return lines
 
@@ -78,7 +84,7 @@ class SIM7600Modem:
 
     async def get_operator(self) -> str | None:
         """Get the current operator name."""
-        lines = await self.send_command('AT+COPS?')
+        lines = await self.send_command("AT+COPS?")
         for line in lines:
             if match := re.search(r'\+COPS:\s*\d+,\d+,"([^"]+)"', line):
                 return match.group(1)
@@ -150,7 +156,6 @@ class SIM7600Modem:
             await self._writer.drain()
 
             # Wait for OK
-            lines = []
             try:
                 while True:
                     line_bytes = await asyncio.wait_for(self._reader.readline(), 10)
@@ -168,7 +173,7 @@ class SIM7600Modem:
         # Set text mode
         await self.send_command("AT+CMGF=1")
         lines = await self.send_command('AT+CMGL="REC UNREAD"')
-        
+
         messages = []
         # Example line: +CMGL: 1,"REC UNREAD","+1234567890",,"21/03/25,02:35:04+00"
         # Followed by message body
@@ -176,16 +181,15 @@ class SIM7600Modem:
         while i < len(lines):
             line = lines[i]
             if line.startswith("+CMGL:"):
-                match = re.search(r'\+CMGL:\s*\d+,"[^"]+","([^"]+)",[^,]*,"([^"]+)"', line)
+                pattern = r'\+CMGL:\s*\d+,"[^"]+","([^"]+)",[^,]*,"([^"]+)"'
+                match = re.search(pattern, line)
                 if match and i + 1 < len(lines):
                     sender = match.group(1)
                     timestamp = match.group(2)
-                    body = lines[i+1]
-                    messages.append({
-                        "sender": sender,
-                        "timestamp": timestamp,
-                        "message": body
-                    })
+                    body = lines[i + 1]
+                    messages.append(
+                        {"sender": sender, "timestamp": timestamp, "message": body}
+                    )
                     i += 1
             i += 1
         return messages
@@ -200,11 +204,11 @@ class SIM7600Modem:
         lines = await self.send_command("AT+CGPSINFO")
         for line in lines:
             if line.startswith("+CGPSINFO:"):
-                # Example: +CGPSINFO: 3113.343286,N,12121.259046,E,250321,023504.0,45.0,0.0,0.0
+                # Example: +CGPSINFO: 3113.343286,N,12121.259046,E,250321,023504.0,...
                 content = line.replace("+CGPSINFO: ", "").strip()
                 if not content or content == ",,,,,,,,":
                     return None
-                
+
                 parts = content.split(",")
                 if len(parts) < 4:
                     return None

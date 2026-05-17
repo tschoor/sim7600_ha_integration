@@ -1,10 +1,13 @@
 """Tests for the SIM7600 config flow."""
+
 from unittest.mock import MagicMock, patch
 
 import pytest
 from homeassistant import config_entries, data_entry_flow
 from homeassistant.components import usb
-from custom_components.sim7600.const import DOMAIN, CONF_SERIAL_PORT, CONF_BAUD_RATE
+
+from custom_components.sim7600.const import CONF_BAUD_RATE, CONF_SERIAL_PORT, DOMAIN
+
 
 @pytest.fixture(autouse=True)
 def mock_serial_list():
@@ -16,11 +19,13 @@ def mock_serial_list():
         mock.return_value = [port]
         yield mock
 
+
 @pytest.fixture
 def mock_serial():
     """Mock serial.Serial."""
     with patch("serial.Serial") as mock:
         yield mock
+
 
 async def test_flow_init(hass):
     """Prüft, ob der Konfigurations-Dialog in HA startet."""
@@ -30,12 +35,13 @@ async def test_flow_init(hass):
     assert result["type"] == data_entry_flow.FlowResultType.FORM
     assert result["step_id"] == "user"
 
+
 async def test_user_flow_success(hass, mock_serial):
     """Test successful user flow."""
     result = await hass.config_entries.flow.async_init(
         DOMAIN, context={"source": config_entries.SOURCE_USER}
     )
-    
+
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"],
         {
@@ -43,7 +49,7 @@ async def test_user_flow_success(hass, mock_serial):
             CONF_BAUD_RATE: 115200,
         },
     )
-    
+
     assert result["type"] == data_entry_flow.FlowResultType.CREATE_ENTRY
     assert result["title"] == "/dev/ttyUSB2"
     assert result["data"] == {
@@ -51,14 +57,15 @@ async def test_user_flow_success(hass, mock_serial):
         CONF_BAUD_RATE: 115200,
     }
 
+
 async def test_user_flow_cannot_connect(hass, mock_serial):
     """Test user flow when connection fails."""
     mock_serial.side_effect = Exception("Connection failed")
-    
+
     result = await hass.config_entries.flow.async_init(
         DOMAIN, context={"source": config_entries.SOURCE_USER}
     )
-    
+
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"],
         {
@@ -66,9 +73,10 @@ async def test_user_flow_cannot_connect(hass, mock_serial):
             CONF_BAUD_RATE: 115200,
         },
     )
-    
+
     assert result["type"] == data_entry_flow.FlowResultType.FORM
     assert result["errors"] == {"base": "cannot_connect"}
+
 
 async def test_usb_discovery(hass):
     """Test USB discovery flow."""
@@ -80,11 +88,11 @@ async def test_usb_discovery(hass):
         manufacturer="SIMTech",
         description="SIM7600",
     )
-    
+
     result = await hass.config_entries.flow.async_init(
         DOMAIN, context={"source": config_entries.SOURCE_USB}, data=discovery_info
     )
-    
+
     assert result["type"] == data_entry_flow.FlowResultType.FORM
     assert result["step_id"] == "discovery_confirm"
 
@@ -92,7 +100,7 @@ async def test_usb_discovery(hass):
         result["flow_id"],
         user_input={},
     )
-    
+
     assert result["type"] == data_entry_flow.FlowResultType.CREATE_ENTRY
     assert result["title"] == "/dev/ttyUSB2"
     assert result["data"] == {

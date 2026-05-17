@@ -1,5 +1,8 @@
 """Support for SIM7600 sensors."""
+
 from __future__ import annotations
+
+from typing import Any
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -15,6 +18,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from .const import DOMAIN
 from .coordinator import SIM7600DataUpdateCoordinator
 
+
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: ConfigEntry,
@@ -22,7 +26,7 @@ async def async_setup_entry(
 ) -> None:
     """Set up SIM7600 sensors based on a config entry."""
     coordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
-    
+
     async_add_entities(
         [
             SIM7600SignalSensor(coordinator, entry),
@@ -35,6 +39,7 @@ async def async_setup_entry(
             SIM7600LastSMSSensor(coordinator, entry),
         ]
     )
+
 
 class SIM7600SensorBase(CoordinatorEntity[SIM7600DataUpdateCoordinator], SensorEntity):
     """Base class for SIM7600 sensors."""
@@ -52,6 +57,7 @@ class SIM7600SensorBase(CoordinatorEntity[SIM7600DataUpdateCoordinator], SensorE
             "model": "SIM7600 Series",
         }
 
+
 class SIM7600SignalSensor(SIM7600SensorBase):
     """Representation of a SIM7600 signal strength sensor."""
 
@@ -65,6 +71,7 @@ class SIM7600SignalSensor(SIM7600SensorBase):
         """Return the state of the sensor."""
         return self.coordinator.data.get("signal_dbm")
 
+
 class SIM7600OperatorSensor(SIM7600SensorBase):
     """Representation of a SIM7600 operator sensor."""
 
@@ -75,6 +82,7 @@ class SIM7600OperatorSensor(SIM7600SensorBase):
     def native_value(self) -> str | None:
         """Return the state of the sensor."""
         return self.coordinator.data.get("operator")
+
 
 class SIM7600NetworkModeSensor(SIM7600SensorBase):
     """Representation of a SIM7600 network mode sensor."""
@@ -87,6 +95,7 @@ class SIM7600NetworkModeSensor(SIM7600SensorBase):
         """Return the state of the sensor."""
         return self.coordinator.data.get("network_mode")
 
+
 class SIM7600SystemModeSensor(SIM7600SensorBase):
     """Representation of a SIM7600 system mode sensor."""
 
@@ -97,6 +106,7 @@ class SIM7600SystemModeSensor(SIM7600SensorBase):
     def native_value(self) -> str | None:
         """Return the state of the sensor."""
         return self.coordinator.data.get("system_mode")
+
 
 class SIM7600IMEISensor(SIM7600SensorBase):
     """Representation of a SIM7600 IMEI sensor."""
@@ -110,6 +120,7 @@ class SIM7600IMEISensor(SIM7600SensorBase):
         """Return the state of the sensor."""
         return self.coordinator.data.get("imei")
 
+
 class SIM7600FirmwareSensor(SIM7600SensorBase):
     """Representation of a SIM7600 firmware sensor."""
 
@@ -122,6 +133,7 @@ class SIM7600FirmwareSensor(SIM7600SensorBase):
         """Return the state of the sensor."""
         return self.coordinator.data.get("firmware")
 
+
 class SIM7600SIMStatusSensor(SIM7600SensorBase):
     """Representation of a SIM7600 SIM status sensor."""
 
@@ -133,6 +145,7 @@ class SIM7600SIMStatusSensor(SIM7600SensorBase):
     def native_value(self) -> str | None:
         """Return the state of the sensor."""
         return self.coordinator.data.get("sim_status")
+
 
 class SIM7600LastSMSSensor(SIM7600SensorBase):
     """Representation of a SIM7600 last SMS sensor."""
