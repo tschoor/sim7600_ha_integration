@@ -2,7 +2,7 @@
 select = ["E", "F", "I", "B", "C4", "UP", "ASYNC"]
 
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.12"
 show_error_codes = true
 ignore_missing_imports = true
 strict = true
