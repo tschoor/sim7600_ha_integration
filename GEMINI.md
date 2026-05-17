@@ -22,3 +22,5 @@ This file contains the architectural standards, conventions, and workflows for t
    - Run `ruff check .` and `pytest` to validate.
 4. **Validation:** Always verify correctness via tests and linting before considering a task complete.
 5. **Synchronization:** Perform a Git synchronization (push/pull) according to Git Flow after work is completed.
+6. **CI Monitoring:** Monitor the GitHub Actions pipeline for the pushed changes.
+7. **Autonomous Fix:** If CI fails, analyze logs in Plan Mode and propose/apply necessary fixes until CI is green.

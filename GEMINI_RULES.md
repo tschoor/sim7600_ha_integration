@@ -33,6 +33,8 @@ Entwicklung einer offiziellen, stabilen und asynchronen Home Assistant Integrati
 * **Statische Analyse:** Führe vor jeder Code-Änderung eine Analyse via `ruff check .` und `mypy .` durch.
 * **Testing:** Für jede neue Logik (insb. Parser) muss ein Testfall in `tests/` existieren. Nutze `pytest` und Mocks für die Hardware-Antworten.
 * **Git Synchronization:** Nach Abschluss jeder Aufgabe muss ein `git push` (und ggf. `git pull --rebase`) durchgeführt werden, um den lokalen Stand mit dem Remote-Repository gemäß Git Flow zu synchronisieren.
+* **CI Ownership:** Ein Task gilt erst dann als "Done", wenn die GitHub Actions Pipeline erfolgreich ("grün") durchgelaufen ist.
+* **Autonomes Troubleshooting:** Bei Pipeline-Fehlern muss der Agent eigenständig die Logs analysieren und eine Korrekturstrategie im Plan-Modus entwickeln.
 * **Dokumentation:** Halte die **arc42**-Dokumente (`docs/arc42/*.md`) synchron zum Code. Architektonische Entscheidungen (ADRs) werden dort festgehalten.
 
 ---
