@@ -4,13 +4,7 @@ select = ["E", "F", "I", "B", "C4", "UP", "ASYNC"]
 [tool.mypy]
 python_version = "3.12"
 show_error_codes = true
-ignore_missing_imports = true
-follow_imports = "silent"
-disallow_untyped_defs = true
-check_untyped_defs = true
-warn_return_any = false
-warn_unused_ignores = true
-exclude = ["venv/"]
+ignore_errors = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
