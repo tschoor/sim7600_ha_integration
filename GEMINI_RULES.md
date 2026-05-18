@@ -32,6 +32,11 @@ Entwicklung einer offiziellen, stabilen und asynchronen Home Assistant Integrati
 ## 🔄 4. Workflow & Qualitätssicherung
 * **Lokale CI-Parität:** Vor jedem Push müssen alle CI-Schritte (Ruff, Mypy, Safety, Pytest) lokal erfolgreich ausgeführt werden. Ein Push ohne lokale Verifizierung ist untersagt.
 * **Commit-Disziplin:** Jede Commit-Nachricht muss auf einer Analyse des `git diff` basieren und den logischen Kern der Änderung präzise beschreiben.
+* **Logging Standards:**
+  * `TRACE`: Rohdaten vom seriellen Port (nur bei aktiviertem Debug-Modus).
+  * `DEBUG`: Senden/Empfangen von AT-Befehlen.
+  * `INFO`: Wichtige Zustandsänderungen der Integration.
+  * `ERROR`: Fehler bei Verbindungen, Timeout oder Parsing.
 * **CI Ownership:** Ein Task gilt erst dann als "Done", wenn sowohl der lokale Lauf als auch die GitHub Actions Pipeline erfolgreich ("grün") sind.
 * **Autonomes Troubleshooting:** Bei Pipeline-Fehlern muss der Agent eigenständig die Logs analysieren und eine Korrekturstrategie im Plan-Modus entwickeln.
 

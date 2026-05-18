@@ -6,7 +6,7 @@ from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers import config_validation as cv
 
-from .const import CONF_BAUD_RATE, CONF_SERIAL_PORT, DOMAIN, LOGGER
+from .const import CONF_BAUD_RATE, CONF_DEBUG_MODE, CONF_SERIAL_PORT, DOMAIN, LOGGER
 from .coordinator import SIM7600DataUpdateCoordinator
 from .modem import SIM7600Modem
 
@@ -30,9 +30,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     port = entry.data[CONF_SERIAL_PORT]
     baud = entry.data[CONF_BAUD_RATE]
+    debug = entry.data.get(CONF_DEBUG_MODE, False)
 
-    modem = SIM7600Modem(port, baud)
-    coordinator = SIM7600DataUpdateCoordinator(hass, modem)
+    modem = SIM7600Modem(port, baud, debug=debug)
+    coordinator = SIM7600DataUpdateCoordinator(hass, modem, entry)
 
     # Initial data fetch
     await coordinator.async_config_entry_first_refresh()

@@ -17,7 +17,7 @@ This file contains the architectural standards, conventions, and workflows for t
 1. **Research:** Explore codebase using `grep_search` and `glob`.
 2. **Strategy:** Plan changes before execution.
 3. **Execution:** 
-   - Apply changes surgically.
+   - Apply changes surgically (incorporate logging: TRACE for raw serial, DEBUG for AT commands).
    - Run local CI parity checks: `ruff`, `mypy`, `safety`, `pytest`.
 4. **Validation:** Analyze `git diff` to ensure all changes are intentional and logical.
 5. **Synchronization:** 

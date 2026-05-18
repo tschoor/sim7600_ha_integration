@@ -14,10 +14,11 @@ from .const import LOGGER
 class SIM7600Modem:
     """Interface to communicate with SIM7600 via AT commands."""
 
-    def __init__(self, port: str, baudrate: int) -> None:
+    def __init__(self, port: str, baudrate: int, debug: bool = False) -> None:
         """Initialize the modem interface."""
         self.port = port
         self.baudrate = baudrate
+        self.debug = debug
         self._reader: asyncio.StreamReader | None = None
         self._writer: asyncio.StreamWriter | None = None
         self._lock = asyncio.Lock()
@@ -62,6 +63,8 @@ class SIM7600Modem:
                         self._reader.readline(), timeout
                     )
                     line = line_bytes.decode().strip()
+                    if self.debug:
+                        LOGGER.log(5, "Trace: Raw line: %s", line)
                     if not line:
                         continue
                     lines.append(line)

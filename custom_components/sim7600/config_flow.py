@@ -13,6 +13,7 @@ from homeassistant.exceptions import HomeAssistantError
 
 from .const import (
     CONF_BAUD_RATE,
+    CONF_DEBUG_MODE,
     CONF_GNSS_INTERVAL,
     CONF_POLLING_INTERVAL,
     CONF_SERIAL_PORT,
@@ -71,6 +72,7 @@ class Sim7600ConfigFlow(ConfigFlow, domain=DOMAIN):  # type: ignore[call-arg]
                     vol.Optional(
                         CONF_GNSS_INTERVAL, default=DEFAULT_GNSS_INTERVAL
                     ): vol.All(vol.Coerce(int), vol.Range(min=60)),
+                    vol.Optional(CONF_DEBUG_MODE, default=False): bool,
                 }
             ),
             errors=errors,
