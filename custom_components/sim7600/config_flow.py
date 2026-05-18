@@ -71,7 +71,7 @@ class Sim7600ConfigFlow(ConfigFlow, domain=DOMAIN):  # type: ignore[call-arg]
                     ): vol.All(vol.Coerce(int), vol.Range(min=15)),
                     vol.Optional(
                         CONF_GNSS_INTERVAL, default=DEFAULT_GNSS_INTERVAL
-                    ): vol.All(vol.Coerce(int), vol.Range(min=60)),
+                    ): vol.All(vol.Coerce(int), vol.Range(min=15)),
                     vol.Optional(CONF_DEBUG_MODE, default=False): bool,
                 }
             ),
