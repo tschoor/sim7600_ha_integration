@@ -232,11 +232,14 @@ class SIM7600Modem:
     async def set_gps(self, enable: bool) -> bool:
         """Enable or disable GPS."""
         lines = await self.send_command(f"AT+CGPS={1 if enable else 0}")
-        return "OK" in lines
+        success = "OK" in lines
+        LOGGER.debug("GPS enable=%s, result=%s", enable, lines)
+        return success
 
     async def get_gps_info(self) -> dict[str, Any] | None:
         """Get GPS location information."""
         lines = await self.send_command("AT+CGPSINFO")
+        LOGGER.debug("GPS info response: %s", lines)
         for line in lines:
             if line.startswith("+CGPSINFO:"):
                 # Example: +CGPSINFO: 3113.343286,N,12121.259046,E,250321,023504.0,...
