@@ -10,7 +10,11 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import SIGNAL_STRENGTH_DECIBELS_MILLIWATT
+from homeassistant.const import (
+    SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+    UnitOfLength,
+    UnitOfSpeed,
+)
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -38,6 +42,10 @@ async def async_setup_entry(
             SIM7600FirmwareSensor(coordinator, entry),
             SIM7600SIMStatusSensor(coordinator, entry),
             SIM7600LastSMSSensor(coordinator, entry),
+            SIM7600SpeedSensor(coordinator, entry),
+            SIM7600AltitudeSensor(coordinator, entry),
+            SIM7600DateSensor(coordinator, entry),
+            SIM7600TimeSensor(coordinator, entry),
         ]
     )
 
@@ -172,3 +180,57 @@ class SIM7600LastSMSSensor(SIM7600SensorBase):
                 "timestamp": last_sms.get("timestamp"),
             }
         return {}
+
+
+class SIM7600SpeedSensor(SIM7600SensorBase):
+    """Representation of a SIM7600 speed sensor."""
+
+    _attr_name = "Speed"
+    _attr_device_class = SensorDeviceClass.SPEED
+    _attr_native_unit_of_measurement = UnitOfSpeed.KILOMETERS_PER_HOUR
+    _attr_state_class = SensorStateClass.MEASUREMENT
+
+    @property
+    def native_value(self) -> float | None:
+        """Return the state of the sensor."""
+        gps = self.coordinator.data.get("gps")
+        return gps.get("speed") if gps else None
+
+
+class SIM7600AltitudeSensor(SIM7600SensorBase):
+    """Representation of a SIM7600 altitude sensor."""
+
+    _attr_name = "Altitude"
+    _attr_device_class = SensorDeviceClass.DISTANCE
+    _attr_native_unit_of_measurement = UnitOfLength.METERS
+    _attr_state_class = SensorStateClass.MEASUREMENT
+
+    @property
+    def native_value(self) -> float | None:
+        """Return the state of the sensor."""
+        gps = self.coordinator.data.get("gps")
+        return gps.get("altitude") if gps else None
+
+
+class SIM7600DateSensor(SIM7600SensorBase):
+    """Representation of a SIM7600 date sensor."""
+
+    _attr_name = "GNSS Date"
+
+    @property
+    def native_value(self) -> str | None:
+        """Return the state of the sensor."""
+        gps = self.coordinator.data.get("gps")
+        return gps.get("date") if gps else None
+
+
+class SIM7600TimeSensor(SIM7600SensorBase):
+    """Representation of a SIM7600 time sensor."""
+
+    _attr_name = "GNSS Time"
+
+    @property
+    def native_value(self) -> str | None:
+        """Return the state of the sensor."""
+        gps = self.coordinator.data.get("gps")
+        return gps.get("time") if gps else None
