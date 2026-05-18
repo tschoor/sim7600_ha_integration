@@ -252,6 +252,7 @@ class SIM7600Modem:
                     return None
 
                 parts = content.split(",")
+                LOGGER.debug("GPS parts: %s", parts)
                 if len(parts) < 4:
                     return None
 
