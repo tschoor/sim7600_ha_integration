@@ -61,6 +61,7 @@ class SIM7600DataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             # Enable GPS once
             if not self.gps_enabled:
                 self.gps_enabled = await self.modem.set_gps(True)
+                LOGGER.debug("GPS enabled: %s", self.gps_enabled)
 
             # Periodic polling
             rssi = await self.modem.get_signal_quality()
@@ -77,6 +78,13 @@ class SIM7600DataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             # Fetch GPS info
             gps_info = None
             now = time.time()
+            LOGGER.debug(
+                "GPS condition check: enabled=%s, interval=%s, last_update=%s, now=%s",
+                self.gps_enabled,
+                self.gnss_interval,
+                self.last_gnss_update,
+                now,
+            )
             if self.gps_enabled and (now - self.last_gnss_update > self.gnss_interval):
                 gps_info = await self.modem.get_gps_info()
                 if gps_info:
