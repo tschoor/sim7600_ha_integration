@@ -281,10 +281,13 @@ class SIM7600Modem:
                         info["date"] = parts[4]
                     if len(parts) >= 6 and parts[5]:  # Time
                         info["time"] = parts[5]
-                    if len(parts) >= 7 and parts[6]:  # Altitude
-                        info["altitude"] = float(parts[6])
-                    if len(parts) >= 8 and parts[7]:  # Speed
-                        info["speed"] = float(parts[7])
+                    try:
+                        if len(parts) >= 7 and parts[6]:  # Altitude
+                            info["altitude"] = float(parts[6])
+                        if len(parts) >= 8 and parts[7]:  # Speed
+                            info["speed"] = float(parts[7])
+                    except ValueError as e:
+                        LOGGER.debug("Error parsing altitude/speed: %s", e)
                     return info
                 except (ValueError, IndexError):
                     return None
