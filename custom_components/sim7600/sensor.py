@@ -22,6 +22,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
 from .coordinator import SIM7600DataUpdateCoordinator
+from .types import GpsData, SmsData
 
 
 async def async_setup_entry(
@@ -165,19 +166,19 @@ class SIM7600LastSMSSensor(SIM7600SensorBase):
     @property
     def native_value(self) -> str | None:
         """Return the state of the sensor."""
-        last_sms = self.coordinator.data.get("last_sms")
-        if last_sms:
-            return last_sms.get("message")
+        last_sms: SmsData | None = self.coordinator.data.get("last_sms")
+        if last_sms is not None:
+            return last_sms.message
         return None
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
         """Return extra state attributes."""
-        last_sms = self.coordinator.data.get("last_sms")
-        if last_sms:
+        last_sms: SmsData | None = self.coordinator.data.get("last_sms")
+        if last_sms is not None:
             return {
-                "sender": last_sms.get("sender"),
-                "timestamp": last_sms.get("timestamp"),
+                "sender": last_sms.sender,
+                "timestamp": last_sms.timestamp,
             }
         return {}
 
@@ -193,8 +194,8 @@ class SIM7600SpeedSensor(SIM7600SensorBase):
     @property
     def native_value(self) -> float | None:
         """Return the state of the sensor."""
-        gps = self.coordinator.data.get("gps")
-        return gps.get("speed") if gps else None
+        gps: GpsData | None = self.coordinator.data.get("gps")
+        return gps.speed if gps is not None else None
 
 
 class SIM7600AltitudeSensor(SIM7600SensorBase):
@@ -208,29 +209,29 @@ class SIM7600AltitudeSensor(SIM7600SensorBase):
     @property
     def native_value(self) -> float | None:
         """Return the state of the sensor."""
-        gps = self.coordinator.data.get("gps")
-        return gps.get("altitude") if gps else None
+        gps: GpsData | None = self.coordinator.data.get("gps")
+        return gps.altitude if gps is not None else None
 
 
 class SIM7600DateSensor(SIM7600SensorBase):
-    """Representation of a SIM7600 date sensor."""
+    """Representation of a SIM7600 GNSS date sensor."""
 
     _attr_name = "GNSS Date"
 
     @property
     def native_value(self) -> str | None:
         """Return the state of the sensor."""
-        gps = self.coordinator.data.get("gps")
-        return gps.get("date") if gps else None
+        gps: GpsData | None = self.coordinator.data.get("gps")
+        return gps.date if gps is not None else None
 
 
 class SIM7600TimeSensor(SIM7600SensorBase):
-    """Representation of a SIM7600 time sensor."""
+    """Representation of a SIM7600 GNSS time sensor."""
 
     _attr_name = "GNSS Time"
 
     @property
     def native_value(self) -> str | None:
         """Return the state of the sensor."""
-        gps = self.coordinator.data.get("gps")
-        return gps.get("time") if gps else None
+        gps: GpsData | None = self.coordinator.data.get("gps")
+        return gps.time if gps is not None else None

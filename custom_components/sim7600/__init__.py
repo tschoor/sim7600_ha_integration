@@ -6,7 +6,13 @@ from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers import config_validation as cv
 
-from .const import CONF_BAUD_RATE, CONF_DEBUG_MODE, CONF_SERIAL_PORT, DOMAIN, LOGGER
+from .const import (
+    CONF_BAUD_RATE,
+    CONF_DEBUG_MODE,
+    CONF_SERIAL_PORT,
+    DOMAIN,
+    LOGGER,
+)
 from .coordinator import SIM7600DataUpdateCoordinator
 from .modem import SIM7600Modem
 
@@ -30,12 +36,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     port = entry.data[CONF_SERIAL_PORT]
     baud = entry.data[CONF_BAUD_RATE]
-    debug = entry.data.get(CONF_DEBUG_MODE, False)
+    # Debug-Modus: zuerst options, dann data
+    debug = entry.options.get(CONF_DEBUG_MODE, entry.data.get(CONF_DEBUG_MODE, False))
 
     modem = SIM7600Modem(port, baud, debug=debug)
     coordinator = SIM7600DataUpdateCoordinator(hass, modem, entry)
 
-    # Initial data fetch
     await coordinator.async_config_entry_first_refresh()
 
     hass.data[DOMAIN][entry.entry_id] = {
@@ -58,7 +64,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
+    # Reload-Listener: Änderungen über den Options-Flow übernehmen
+    entry.async_on_unload(entry.add_update_listener(_async_reload_entry))
+
     return True
+
+
+async def _async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Lädt die Integration nach Options-Änderungen neu."""
+    await hass.config_entries.async_reload(entry.entry_id)
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:

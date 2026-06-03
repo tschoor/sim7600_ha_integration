@@ -7,12 +7,20 @@
         "description": "Please select the serial port and baud rate for your SIM7600 module.",
         "data": {
           "serial_port": "Serial Port",
-          "baud_rate": "Baud Rate"
+          "baud_rate": "Baud Rate",
+          "polling_interval": "Polling Interval (seconds)",
+          "gnss_interval": "GNSS Interval (seconds)",
+          "debug_mode": "Debug Mode"
         }
       },
       "discovery_confirm": {
-        "title": "Confirm SIM7600",
-        "description": "Do you want to set up the SIM7600 module discovered on {port}?"
+        "title": "Configure SIM7600",
+        "description": "SIM7600 module detected on {port}. Configure polling intervals.",
+        "data": {
+          "polling_interval": "Polling Interval (seconds)",
+          "gnss_interval": "GNSS Interval (seconds)",
+          "debug_mode": "Debug Mode"
+        }
       }
     },
     "error": {
@@ -21,6 +29,19 @@
     },
     "abort": {
       "already_configured": "Device is already configured"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "SIM7600 Options",
+        "description": "Adjust polling intervals and debug settings.",
+        "data": {
+          "polling_interval": "Polling Interval (seconds)",
+          "gnss_interval": "GNSS Interval (seconds)",
+          "debug_mode": "Debug Mode"
+        }
+      }
     }
   },
   "services": {
